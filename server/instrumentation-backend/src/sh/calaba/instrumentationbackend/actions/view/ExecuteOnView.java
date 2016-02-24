@@ -10,6 +10,7 @@ import sh.calaba.instrumentationbackend.actions.Action;
 import sh.calaba.instrumentationbackend.query.Operation;
 import sh.calaba.instrumentationbackend.query.Query;
 import sh.calaba.instrumentationbackend.query.QueryResult;
+import sh.calaba.instrumentationbackend.query.WebContainer;
 import sh.calaba.instrumentationbackend.query.ast.InvalidUIQueryException;
 
 /**
@@ -34,6 +35,24 @@ public class ExecuteOnView {
             if(rememberFirst.first instanceof View) {
                 message = onViewAction.doOnView((View) rememberFirst.first);
             } else if(rememberFirst.first instanceof Map) {
+                if (onViewAction instanceof ScrollToView) {
+                    // Reset the viewport and get the absolute coordinates of the view
+                    WebContainer webContainer = (WebContainer) ((Map)rememberFirst.first).get("calabashWebContainer");
+
+                    try {
+                        webContainer.evaluateSyncJavaScript("window.scrollTo(0, 0);", true);
+                    } catch (Exception ex) {
+                        System.out.println(ex.getMessage());
+                    }
+
+                    rememberFirst = new RememberFirst();
+                    query = new Query(args[0], Arrays.asList(rememberFirst));
+                    queryResult = query.executeQuery();
+
+                    if (queryResult.isEmpty()) {
+                        return Result.failedResult("Query found no view(s).");
+                    }
+                }
                 message = onViewAction.doOnView((Map) rememberFirst.first);
             }
         } catch (Exception e) {
