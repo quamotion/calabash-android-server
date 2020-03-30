@@ -5,7 +5,7 @@ jobs:
 
   container:
     image: circleci/android:api-23
-    options: "--name ci-container -v /usr/bin/docker:/tmp/docker:ro"
+    options: "-u 0 --name ci-container -v /usr/bin/docker:/tmp/docker:ro"
 
   steps:
   - script: |
