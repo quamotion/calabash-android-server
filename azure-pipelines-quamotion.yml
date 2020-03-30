@@ -1,0 +1,27 @@
+jobs:
+- job:
+  pool:
+    vmImage: 'ubuntu-18.04'
+
+  container: circleci/android:api-23
+
+  steps:
+  - task: Gradle@2
+    inputs:
+      workingDirectory: 'server/'
+      gradleWrapperFile: 'server/gradlew'
+      gradleOptions: '-Xmx3072m'
+      publishJUnitResults: false
+      tasks: 'assembleAndroidTest'
+      displayName: "Build TestServer.apk"
+
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: '$(Build.SourcesDirectory)'
+      contents: '(AndroidManifest.xml|TestSErver.apk)'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: drop
