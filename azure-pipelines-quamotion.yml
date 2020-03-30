@@ -4,8 +4,13 @@ jobs:
     vmImage: 'ubuntu-18.04'
 
   container: circleci/android:api-23
+    options: "--name ci-container -v /usr/bin/docker:/tmp/docker:ro"
 
   steps:
+  - script: |
+      /tmp/docker exec -t -u 0 ci-container \
+      sh -c "apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confold" -y install sudo"
+    displayName: Set up sudo
   - task: Gradle@2
     inputs:
       workingDirectory: 'server/'
@@ -13,7 +18,7 @@ jobs:
       gradleOptions: '-Xmx3072m'
       publishJUnitResults: false
       tasks: 'assembleAndroidTest'
-      displayName: "Build TestServer.apk"
+    displayName: "Build TestServer.apk"
 
   - task: CopyFiles@2
     inputs:
