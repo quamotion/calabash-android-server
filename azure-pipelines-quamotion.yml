@@ -3,7 +3,8 @@ jobs:
   pool:
     vmImage: 'ubuntu-18.04'
 
-  container: circleci/android:api-23
+  container:
+    image: circleci/android:api-23
     options: "--name ci-container -v /usr/bin/docker:/tmp/docker:ro"
 
   steps:
