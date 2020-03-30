@@ -27,7 +27,7 @@ jobs:
   - task: CopyFiles@2
     inputs:
       sourceFolder: '$(Build.SourcesDirectory)'
-      contents: '(AndroidManifest.xml|TestServer.apk)'
+      contents: '(AndroidManifest.*|TestServer.*)'
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
   - task: PublishBuildArtifacts@1
