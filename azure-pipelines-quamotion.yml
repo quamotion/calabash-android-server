@@ -21,10 +21,13 @@ jobs:
       tasks: 'assembleAndroidTest'
     displayName: "Build TestServer.apk"
 
+  - script: |
+      ls $(Build.SourcesDirectory)
+
   - task: CopyFiles@2
     inputs:
       sourceFolder: '$(Build.SourcesDirectory)'
-      contents: '(AndroidManifest.xml|TestSErver.apk)'
+      contents: '(AndroidManifest.xml|TestServer.apk)'
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
   - task: PublishBuildArtifacts@1
